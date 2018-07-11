@@ -1,13 +1,23 @@
 # web-editor
-- this is a simple web editor now, but I will use webpack to build, run on nodeJs and rebuild by vue framework in the future.
+> A Vue.js project create by vue-cli
 
-# project structure
-├─demo                  # you can find samples in this directory
-│  ├─autorun
-│  └─simple
-├─src
-└─static                # note that, I want to use custom CSS/Js without another lib
-    ├─css
-    │  └─simple
-    └─js
-       └─simple
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+
+

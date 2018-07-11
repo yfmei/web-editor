@@ -1,0 +1,16 @@
+# npm install failed
+- temporary use
+```cmd
+npm --registry https://registry.npm.taobao.org install packagename
+```
+- persistent use
+```cmd
+npm config set registry https://registry.npm.taobao.org
+
+# validate
+npm config get registry
+```
+
+# idea can not recognition /src alias '@'
+- Languages & Frameworks -> JavaScript -> webpack
+- choose your webpack.base.conf.js
