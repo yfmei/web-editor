@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>web editor</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../static/css/simple/editor.css">
+    <link rel="stylesheet" href="../../static/css/common.css">
+</head>
+<body>
+    <h1>this is a web editor by contenteditable div</h1>
+    <div class="container w100">
+        <div class="h100 w40 fl border" id="editor" contenteditable="true"></div>
+        <iframe class="h100 w40 fr border" id="result" ></iframe>
+    </div>
+    <div class="run w100 fixed">
+        <button class="btn" onclick="run()">运行</button>
+    </div>
+
+    <script src="../../static/js/simple/editor.js"></script>
+    <script src="../../static/js/common.js"></script>
+</body>
+</html>

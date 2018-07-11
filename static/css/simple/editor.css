@@ -1,0 +1,21 @@
+/**
+ * @author yfmei
+ * 2018/7/11
+ */
+
+.container {
+    height: 500px;
+}
+
+#editor {
+    margin: 20px;
+}
+
+#result {
+    margin: 20px;
+}
+
+.run {
+    bottom: 20px;
+}
+
