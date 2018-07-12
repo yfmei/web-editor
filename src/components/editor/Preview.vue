@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <iframe class="h100 w40 fr border"></iframe>
-  </div>
+  <iframe id="displayer" class="h100 w40 fr border"></iframe>
 </template>
 
 <script>
+  import 'static/css/simple/simple.css'
+
   export default {
     name: 'Preview'
   }

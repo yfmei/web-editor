@@ -2,7 +2,6 @@
  * @author yfmei
  * 2018/7/11
  */
-import $ from 'static/js/common/dom'
 import log from 'static/js/common/log'
 
 /**
@@ -19,17 +18,14 @@ function isChanged(editContent, userCode) {
   return editContent !== userCode
 }
 
-function run(userCode, callback) {
+function run(vm, callback) {
   log('run')
-  let displayer = $('#result')
-  let editor = $('#editor')
 
-  let editContent = getEditContent(editor)
-
-  if (isChanged(editContent, userCode)) {
-    console.log(`current content is changed: \n${editContent}\n, let's update and save...`)
+  let editContent = getEditContent(vm.editor)
+  if (isChanged(editContent, vm.userCode)) {
+    log('current content is changed, let\'s update and save...')
     // update
-    preview(displayer, editContent)
+    preview(vm.displayer, editContent)
 
     // overwrite global content variable
     callback(editContent)
@@ -136,7 +132,7 @@ function figureRefresh(displayer, editContent) {
  */
 function preview(displayer, editContent) {
   if (displayer.tagName === 'IFRAME') {
-    iframeRefresh(displayer)
+    iframeRefresh(displayer, editContent)
   } else {
     figureRefresh(displayer, editContent)
   }
