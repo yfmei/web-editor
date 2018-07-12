@@ -7,7 +7,7 @@ yarn-error.log*
 
 # Editor directories and files
 .idea
-.iml
+web-editor.iml
 
 .vscode
 *.suo
