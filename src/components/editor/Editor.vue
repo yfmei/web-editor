@@ -1,5 +1,5 @@
 <template>
-  <textarea id="editor" v-model="example" class="h100 w40 fl border" title=""></textarea>
+  <textarea id="editor" class="h100 w40 fl border" title="">html:5>div#page>div#header>ul.navigation>li*4>a</textarea>
 </template>
 
 <script>

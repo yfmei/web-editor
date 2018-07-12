@@ -14,3 +14,20 @@ npm config get registry
 # idea can not recognition /src alias '@'
 - Languages & Frameworks -> JavaScript -> webpack
 - choose your webpack.base.conf.js
+- Languages & Frameworks -> Node.js and NPM
+- check Coding assistance for Node.js 
+
+# why bind keyup, not keydown or keypress
+```javascript
+  window.addEventListener('keydown', function (ev) {
+    console.log(`trigger keydown event:${ev}`)
+    // preview bind here will loss the first char you input, 
+    // because the char you entered have not pass into the editor.
+  })
+
+  window.addEventListener('keypress', function (ev) {
+    console.log(`trigger keypress event: ${ev}`)
+    // same to the keydown
+  })
+```
+- [different in key event](https://blog.csdn.net/john1337/article/details/46980913)

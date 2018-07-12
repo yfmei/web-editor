@@ -20,6 +20,13 @@
   export default {
     name: 'AutoRunEditor',
     components: {Editor, Preview},
+    directives: {
+      focus: {
+        inserted: function (e, condition) {
+          console.log('focus on the editor')
+        }
+      }
+    },
     data() {
       return {
         userCode: '',
@@ -32,12 +39,15 @@
       let self = this
       self.editor = document.getElementById('editor')
       self.displayer = document.getElementById('displayer')
-      window.addEventListener('keydown', function () {
-        console.log('trigger keyboard event')
+
+      window.addEventListener('keyup', function (ev) {
+        console.log(`trigger keyup event: ${ev}`)
+        // record each char
         self.$nextTick(function () {
           self.run()
         })
       })
+
     },
     methods: {
       run: function () {
