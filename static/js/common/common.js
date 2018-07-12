@@ -5,88 +5,140 @@
 import $ from 'static/js/common/dom'
 import log from 'static/js/common/log'
 
-function run(htmlCode, callback) {
-  log('run')
-  let iframe = $('iframe')
-  let editor = $('#editor')
+/**
+ * you can use div or textarea to be your editor
+ * @param editor
+ * @returns {*}
+ */
+function getEditContent(editor) {
   // editor is div or textarea
-  let val = editor.tagName === 'DIV' ? editor.textContent : editor.value
-  log(`编辑框的值为 ${val}`)
-  if (val === htmlCode) {
-    // 当前 textarea 的内容和全局保存的内容一致, 无需更新
-    return
-  }
-
-  desc(iframe)
-
-  // 更新 iframe
-  console.log(`当前编辑内容: ${val} 与保存内容不一致, 更新 `)
-  preview(iframe, val)
-
-  // 覆盖全局变量
-  callback(val)
+  return editor.tagName === 'DIV' ? editor.textContent : editor.value
 }
 
+function isChanged(editContent, userCode) {
+  return editContent !== userCode
+}
+
+function run(userCode, callback) {
+  log('run')
+  let displayer = $('#result')
+  let editor = $('#editor')
+
+  let editContent = getEditContent(editor)
+
+  if (isChanged(editContent, userCode)) {
+    console.log(`current content is changed: \n${editContent}\n, let's update and save...`)
+    // update
+    preview(displayer, editContent)
+
+    // overwrite global content variable
+    callback(editContent)
+  }
+}
+
+/**
+ * iframe's context
+ * @param iframe
+ */
 function desc(iframe) {
   let iwindow = iframe.contentWindow
   let idoc = iwindow.document
-  console.log('window', iwindow)// 获取iframe的window对象
-  console.log('document', idoc) // 获取iframe的document
-  console.log('html', idoc.documentElement)// 获取iframe的html
-  console.log('head', idoc.head) // 获取head
-  console.log('body', idoc.body) // 获取body
+  console.log('window', iwindow)
+  console.log('document', idoc)
+  console.log('html', idoc.documentElement)
+  console.log('head', idoc.head)
+  console.log('body', idoc.body)
 }
 
 /**
- * contentDocument 是追加内容, 需要先清空
+ * contentDocument.write is an append method,
+ * we need to clean up the content first
+ * 1.innerText same to innerHtml
+ * 2.reload cause blink
  * @param iframe
  */
-function clear(iframe) {
-  // 以下三种均可, 前两种效果类似
-  // iframe.contentDocument.body.innerHTML = ''
-  iframe.contentDocument.body.innerText = ''
-  // iframe.contentWindow.location.reload(true) // 这种方法间断空白
-}
-
-/**
- * iframe有4种赋值的方式
- * 1.先清空, 再用 write写进去(推荐)
- * 2.URL.createObjectURL(blob) 的方式, 短暂闪烁
- * 3.直接用 srcdoc 属性, 闪烁明显, 体验差
- * 4.用 src 指向另一个页面, 要考虑网络因素
- * @param iframe
- * @param val
- */
-function preview(iframe, val) {
-  // 建议采用 inner 清空, write写入的方法, 无闪烁
-  let write = function (iframe) {
-    clear(iframe)
-    iframe.contentDocument.write(val) // 追加
-  }
-
-  let createObjectUrl = function (iframe) {
-    // 将CSS, HTML字符串转换为Blob对象
-    let blob = new Blob([val], {
-      'type': 'text/html'
-    })
-    // 使用URL.createObjectURL()方法将...
-    iframe.src = URL.createObjectURL(blob) // 轻微闪烁
-  }
-
-  let srcDoc = function (iframe) {
-    iframe.srcdoc = val // 虽然这种方式不用先清空 iframe内容, 但是预览内容每次都会闪烁
-  }
-  let previewType = 1
-  switch (previewType) {
+function iframeCleanUp(iframe) {
+  let iframeClearType = 1
+  switch (iframeClearType) {
     case 1:
-      write(iframe)
+      iframe.contentDocument.body.innerText = ''
       break
     case 2:
-      createObjectUrl(iframe)
+      iframe.contentDocument.body.innerHTML = ''
       break
     case 3:
-      srcDoc(iframe)
+      iframe.contentWindow.location.reload(true)
       break
+  }
+}
+
+/**
+ * there are 4 ways to refresh <iframe>
+ * 1.cleanup and write(recommend)
+ * 2.iframe.src = URL.createObjectURL(Blob(${editContent})), slight blink
+ * 3.iframe.src= another web page
+ * 4.iframe.srcdoc, obvious blink, terrible experience
+ * @param displayer
+ * @param editContent
+ */
+function iframeRefresh(displayer, editContent) {
+  desc(displayer)
+
+  // recommend this way
+  let write = function (displayer) {
+    iframeCleanUp(displayer)
+    displayer.contentDocument.write(editContent)
+  }
+
+  let createObjectUrl = function (displayer) {
+    // transform the CSS/Html string into Blob object
+    let blob = new Blob([editContent], {
+      'type': 'text/html'
+    })
+
+    // transform Bold object  into URL
+    displayer.src = URL.createObjectURL(blob) // slight blink
+  }
+
+  let srcDoc = function (displayer) {
+    displayer.srcdoc = editContent
+  }
+
+  let iframeRefreshType = 1
+  switch (iframeRefreshType) {
+    case 1:
+      write(displayer)
+      break
+    case 2:
+      createObjectUrl(displayer)
+      break
+    case 3:
+      srcDoc(displayer)
+      break
+  }
+}
+
+/**
+ * preview by <figure>
+ * 1.no blink
+ * 2.need to adjust style(For example, content detach from the displayer)
+ * @param displayer
+ * @param editContent
+ */
+function figureRefresh(displayer, editContent) {
+  displayer.innerHTML = editContent
+}
+
+/**
+ * we use <iframe> and <figure> to be our displayer
+ * @param displayer
+ * @param editContent
+ */
+function preview(displayer, editContent) {
+  if (displayer.tagName === 'IFRAME') {
+    iframeRefresh(displayer)
+  } else {
+    figureRefresh(displayer, editContent)
   }
 }
 
